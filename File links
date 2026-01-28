@@ -1,0 +1,25 @@
+stage('Unlink Soft Links') {
+    steps {
+        sh '''
+            ssh user@server_ip << 'EOF'
+                set -e
+                cd /opt/app/links
+
+                for link in \
+                    app.jar \
+                    config.yml \
+                    libutils.so \
+                    startup.sh \
+                    env.properties; do
+
+                    if [ -L "$link" ]; then
+                        echo "Unlinking $link"
+                        unlink "$link"
+                    else
+                        echo "$link is not a symlink or does not exist"
+                    fi
+                done
+            EOF
+        '''
+    }
+}
