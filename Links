@@ -1,0 +1,20 @@
+---
+- name: List all files, directories, and symlinks
+  hosts: all
+  gather_facts: no
+  tasks:
+    - name: Find everything in directory
+      find:
+        paths: /path/to/directory
+        recurse: yes
+        file_type: any
+        follow: no
+      register: found_items
+
+    - name: Display all items
+      debug:
+        msg: |
+          Path: {{ item.path }}
+          Type: {{ item.file_type }}
+          Is symlink: {{ item.islnk | default(false) }}
+      loop: "{{ found_items.files }}"
